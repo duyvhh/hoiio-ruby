@@ -49,7 +49,6 @@ module Hoiio
       required_param_names.each {|p|
         if params[p].nil? || params[p].empty?
           raise Hoiio::InputError.new "Param " << p << " is missing"
-          break
         end
       }
     end
