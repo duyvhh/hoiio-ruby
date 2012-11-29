@@ -1,6 +1,6 @@
 # Hoiio
 
-This is an SDK for [Hoiio API][homepage]
+This is Ruby SDK for [Hoiio API][homepage]
 
 Hoiio API is set of telephony API that integrate telephony services - phone calls, conference, IVR (Interactive Voice Responses), Fax and SMS - into your services and website easily.
 
