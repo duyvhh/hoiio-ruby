@@ -1,13 +1,13 @@
 module Hoiio
   module IVRBlock
-    class Start < HoiioRequest
+    class Start < Request
 
       def initialize(client)
         super client
       end
 
       def dial(params={})
-        api_post('/ivr/start/dial', params, ["dest"])
+        api_post '/ivr/start/dial', params, ["dest"]
       end
 
     end

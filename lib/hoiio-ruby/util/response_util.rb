@@ -1,26 +1,29 @@
 module Hoiio
-  module RequestUtil
+  module ResponseUtil
 
-    def check_nil_or_empty(required_param_names=[], params)
-      required_param_names.each { |p|
-        if params[p].nil? || params[p].empty?
-          raise Hoiio::InputError.new "Param " << p << " is missing"
-        end
-      }
+    def process_response(response)
+
+      response = create_hash response
+
+      if response['status'].nil?
+        raise Hoiio::ServerError
+      elsif STATUS_SUCCESS != response['status']
+        raise Hoiio::ResponseError.new response['status'], response['status']
+      end
+
+      response
+
     end
 
-    def check_for_mutual_exclusivity(required_param_names=[], params)
-      i = 0
-      required_param_names.each { |p|
-        if !params[p].nil? && !params[p].empty?
-          i += 1
-        end
-      }
+    private
 
-      if i == 0
-        raise Hoiio::InputError.new "All required params are missing"
-      elsif i > 1
-        raise Hoiio::InputError.new "More than 1 required, mutually exclusive param are present."
+    def create_hash(response)
+      begin
+        JSON.parse response
+      rescue JSON::ParserError
+        response
+      rescue StandardError
+        response
       end
     end
 

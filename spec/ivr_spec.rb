@@ -1,42 +1,59 @@
 require 'spec_helper'
 
-FAX_SEND_RESPONSE = {:status => SUCCESS, :txn_ref => "test-1"}
-FAX_GET_HISTORY_RESPONSE = {:status => SUCCESS, :entries_count => "1"}
-FAX_GET_RATE_RESPONSE = {:status => SUCCESS, :rate => "0.03", :currency => "SGD"}
-FAX_QUERY_STATUS_RESPONSE = {:status => SUCCESS, :fax_status => "answered", :currency => "USD"}
+IVR_START_DIAL_RESPONSE = {:status => SUCCESS, :txn_ref => "test-1", :session => "S-1"}
+IVR_MIDDLE_PLAY_RESPONSE = {:status => SUCCESS}
+IVR_MIDDLE_GATHER_RESPONSE = {:status => SUCCESS}
+IVR_MIDDLE_RECORD_RESPONSE = {:status => SUCCESS}
+IVR_MIDDLE_MONITOR_RESPONSE = {:status => SUCCESS}
+IVR_END_TRANSFER_RESPONSE = {:status => SUCCESS, :room => "R-1"}
+IVR_END_HANGUP_RESPONSE = {:status => SUCCESS, :room => "R-1"}
 
-FakeWeb.register_uri :post, construct_fakeweb_uri("/fax/send"), :body => FAX_SEND_RESPONSE.to_json
-FakeWeb.register_uri :post, construct_fakeweb_uri("/fax/get_history"), :body => FAX_GET_HISTORY_RESPONSE.to_json
-FakeWeb.register_uri :post, construct_fakeweb_uri("/fax/get_rate"), :body => FAX_GET_RATE_RESPONSE.to_json
-FakeWeb.register_uri :post, construct_fakeweb_uri("/fax/query_status"), :body => FAX_QUERY_STATUS_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/ivr/start/dial"), :body => IVR_START_DIAL_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/ivr/middle/play"), :body => IVR_MIDDLE_PLAY_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/ivr/middle/gather"), :body => IVR_MIDDLE_GATHER_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/ivr/middle/record"), :body => IVR_MIDDLE_RECORD_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/ivr/middle/monitor"), :body => IVR_MIDDLE_MONITOR_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/ivr/end/transfer"), :body => IVR_END_TRANSFER_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/ivr/end/hangup"), :body => IVR_END_HANGUP_RESPONSE.to_json
 
+describe Hoiio::IVR do
 
-describe Hoiio::Fax do
-
-  it 'should send a fax and return txn ref' do
-    response = CLIENT.fax.send({"dest" => TEST_PHONE, "file" => "test"})
+  it 'should make a dial-out to a destination number' do
+    response = CLIENT.ivr.start.dial({"dest" => TEST_PHONE})
     check_status response
     check_txn_ref response
+    response["session"].should == "S-1"
   end
 
-  it 'should return history' do
-    response = CLIENT.fax.get_history
+  it 'should want to play a voice message' do
+    response = CLIENT.ivr.middle.play({"session" => "S-1"})
     check_status response
-    response['entries_count'].should == "1"
   end
 
-  it 'should return fax rate' do
-    response = CLIENT.fax.get_rate({"dest" => "+1231231"})
+  it 'should get user input via the telephone keypad' do
+    response = CLIENT.ivr.middle.gather({"session" => "S-1", "notify_url" => "http://dev.example.com/hoiio/record"})
     check_status response
-    response["currency"].should == "SGD"
-    response["rate"].should == "0.03"
   end
 
-  it 'should query fax status' do
-    response = CLIENT.fax.query_status({"txn_ref" => "test"})
+  it 'should record voice messages from the user over the phone' do
+    response = CLIENT.ivr.middle.gather({"session" => "S-1", "notify_url" => "http://dev.example.com/hoiio/record"})
     check_status response
-    response["currency"].should == "USD"
-    response["fax_status"].should == "answered"
+  end
+
+  it 'should record the call conversation, including any voice messages' do
+    response = CLIENT.ivr.middle.monitor({"session" => "S-1", "notify_url" => "http://dev.example.com/hoiio/record"})
+    check_status response
+  end
+
+  it 'should transfer the call to destination number' do
+    response = CLIENT.ivr.end.transfer({"session" => "S-1", "dest" => "+6591112222"})
+    check_status response
+    response["room"].should == "R-1"
+  end
+
+  it 'should hang up a specific call' do
+    response = CLIENT.ivr.end.hangup({"session" => "S-1"})
+    check_status response
   end
 
 end

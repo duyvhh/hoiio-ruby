@@ -1,13 +1,11 @@
 module Hoiio
-  class HoiioRequest
+  class Request
 
     include HTTParty
     base_uri "https://secure.hoiio.com/open"
 
     include RequestUtil
     include ResponseUtil
-
-    STATUS_SUCCESS = "success_ok"
 
     def initialize(client)
       @client = client
@@ -28,11 +26,10 @@ module Hoiio
         |key, oldval, newval| oldval.merge!(newval)
       }
 
-      response = self.class.post(path, options)
+      response = self.class.post path, options
       case response.code
         when 200
-          filter_status response
-          response
+          process_response response
         else
           raise Hoiio::ServerError
       end

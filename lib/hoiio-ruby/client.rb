@@ -9,16 +9,12 @@ module Hoiio
   #
 
   class Client
-    attr_reader :app_id, :user, :sms, :fax, :number, :ivr
+    attr_reader :app_id, :user, :sms, :fax, :number, :ivr, :voice
     attr_accessor :access_token
 
     def initialize(app_id, access_token)
       @app_id, @access_token = app_id.strip, access_token.strip
       set_up_resources
-    end
-
-    def inspect # :nodoc:
-      "<Hoiio::Client @app_id=#{@app_id}>"
     end
 
     private

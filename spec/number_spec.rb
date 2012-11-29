@@ -1,50 +1,57 @@
 require 'spec_helper'
 
-SMS_SEND_RESPONSE = {:status => SUCCESS, :txn_ref => "test-1"}
-SMS_BULK_SEND_RESPONSE = {:status => SUCCESS, :bulk_txn_ref => "test-2"}
-SMS_GET_HISTORY_RESPONSE = {:status => SUCCESS, :entries_count => "1"}
-SMS_GET_RATE_RESPONSE = {:status => SUCCESS, :rate => "0.03", :currency => "SGD"}
-SMS_QUERY_STATUS_RESPONSE = {:status => SUCCESS, :sms_status => "delivered", :currency => "USD"}
+NUMBER_GET_COUNTRIES_RESPONSE = {:status => SUCCESS, :entries_count => "10"}
+NUMBER_GET_CHOICES_RESPONSE = {:status => SUCCESS, :total_entries_count => "30"}
+NUMBER_GET_RATES_RESPONSE = {:status => SUCCESS, :currency => "SGD", :entries_count => "50"}
+NUMBER_SUBSCRIBE_RESPONSE = {:status => SUCCESS, :debit => "9.99", :currency => "SGD"}
+NUMBER_UPDATE_FORWARDING_RESPONSE = {:status => SUCCESS}
+NUMBER_GET_ACTIVE_RESPONSE = {:status => SUCCESS, :entries_count => "3"}
 
-FakeWeb.register_uri :post, construct_fakeweb_uri("/sms/send"), :body => SMS_SEND_RESPONSE.to_json
-FakeWeb.register_uri :post, construct_fakeweb_uri("/sms/bulk_send"), :body => SMS_BULK_SEND_RESPONSE.to_json
-FakeWeb.register_uri :post, construct_fakeweb_uri("/sms/get_history"), :body => SMS_GET_HISTORY_RESPONSE.to_json
-FakeWeb.register_uri :post, construct_fakeweb_uri("/sms/get_rate"), :body => SMS_GET_RATE_RESPONSE.to_json
-FakeWeb.register_uri :post, construct_fakeweb_uri("/sms/query_status"), :body => SMS_QUERY_STATUS_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/number/get_countries"), :body => NUMBER_GET_COUNTRIES_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/number/get_choices"), :body => NUMBER_GET_CHOICES_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/number/get_rates"), :body => NUMBER_GET_RATES_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/number/subscribe"), :body => NUMBER_SUBSCRIBE_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/number/update_forwarding"), :body => NUMBER_UPDATE_FORWARDING_RESPONSE.to_json
+FakeWeb.register_uri :post, construct_fakeweb_uri("/number/get_active"), :body => NUMBER_GET_ACTIVE_RESPONSE.to_json
 
 
-describe Hoiio::SMS do
+describe Hoiio::Number do
 
-  it 'should send an SMS and return txn ref' do
-    response = CLIENT.sms.send({"dest" => TEST_PHONE, "msg" => "test"})
+  it 'should get a list of countries for Hoiio Numbers' do
+    response = CLIENT.number.get_countries
     check_status response
-    check_txn_ref response
+    response['entries_count'].should == "10"
   end
 
-  it 'should send multiple SMSes and return txn ref' do
-    response = CLIENT.sms.bulk_send({"dest" => "+651234567,+6512352138", "msg" => "test"})
+  it 'should get a list of available Hoiio Numbers for subscription in a given country' do
+    response = CLIENT.number.get_choices({"country" => "SG"})
     check_status response
-    response['bulk_txn_ref'].should_not be_nil
+    response['total_entries_count'].should == "30"
   end
 
-  it 'should return history' do
-    response = CLIENT.sms.get_history
+  it 'should retrieve the billable rate that will be charged for subscribing to a Hoiio Number' do
+    response = CLIENT.number.get_rates({"country" => "SG"})
     check_status response
-    response['entries_count'].should == "1"
+    response['entries_count'].should == "50"
+    response['currency'].should == "SGD"
   end
 
-  it 'should return SMS rate' do
-    response = CLIENT.sms.get_rate({"dest" => "+1231231"})
+  it 'should subscribe for a new Hoiio Number or extend an existing subscription of a Hoiio Number' do
+    response = CLIENT.number.subscribe({"number" => "+6581111111", "duration" => "1"})
     check_status response
-    response["currency"].should == "SGD"
-    response["rate"].should == "0.03"
+    response['debit'].should == "9.99"
+    response['currency'].should == "SGD"
   end
 
-  it 'should query SMS status' do
-    response = CLIENT.sms.query_status({"txn_ref" => "test"})
+  it 'should configure the URL that the incoming call notification and incoming SMS notification for Hoiio Number' do
+    response = CLIENT.number.update_forwarding({"number" => "+6581111111"})
     check_status response
-    response["currency"].should == "USD"
-    response["sms_status"].should == "delivered"
+  end
+
+  it 'should retrieve the list of Hoiio Numbers and their current configurations' do
+    response = CLIENT.number.get_active({"number" => "+6581111111"})
+    check_status response
+    response['entries_count'].should == "3"
   end
 
 end
