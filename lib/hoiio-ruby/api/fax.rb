@@ -1,5 +1,5 @@
 module Hoiio
-  class Fax < HoiioRequest
+  class Fax < Request
 
     def initialize(client)
       super client

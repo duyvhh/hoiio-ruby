@@ -1,5 +1,5 @@
 module Hoiio
-  module IVR
+  module IVRBlock
     class End < HoiioRequest
 
       def initialize(client)

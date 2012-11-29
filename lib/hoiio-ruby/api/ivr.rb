@@ -12,9 +12,9 @@ module Hoiio
     private
 
     def set_up
-      @start = Hoiio::IVR::Start.new(@client)
-      @middle = Hoiio::IVR::Middle.new(@client)
-      @end = Hoiio::IVR::End.new(@client)
+      @start = Hoiio::IVRBlock::Start.new(@client)
+      @middle = Hoiio::IVRBlock::Middle.new(@client)
+      @end = Hoiio::IVRBlock::End.new(@client)
     end
 
   end
