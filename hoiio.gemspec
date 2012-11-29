@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = Hoiio::VERSION
   gem.authors       = ["Steve Van"]
   gem.email         = ["stevevan@hoiio.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = "http:/developer.hoiio.com"
+  gem.description   = "This is an SDK for Hoiio API, a set of telephony API that integrate telephony services - phone calls, conference, IVR (Interactive Voice Responses), Fax and SMS - into your services and website easily."
+  gem.summary       = "Hoiio SDK for Ruby"
+  gem.homepage      = "https://github.com/icarusK/hoiio-ruby"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

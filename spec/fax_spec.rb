@@ -1,3 +1,26 @@
+#Copyright (C) 2012 Hoiio Pte Ltd (http://www.hoiio.com)
+#
+#Permission is hereby granted, free of charge, to any person
+#obtaining a copy of this software and associated documentation
+#files (the "Software"), to deal in the Software without
+#restriction, including without limitation the rights to use,
+#                                                        copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the
+#Software is furnished to do so, subject to the following
+#conditions:
+#
+#The above copyright notice and this permission notice shall be
+#included in all copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+#OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#OTHER DEALINGS IN THE SOFTWARE.
+
 require 'spec_helper'
 
 FAX_SEND_RESPONSE = {:status => SUCCESS, :txn_ref => "test-1"}
@@ -14,7 +37,7 @@ FakeWeb.register_uri :post, construct_fakeweb_uri("/fax/query_status"), :body =>
 describe Hoiio::Fax do
 
   it 'should send a fax and return txn ref' do
-    response = CLIENT.fax.send({"dest" => TEST_PHONE, "file" => "test"})
+    response = CLIENT.fax.send({:dest => TEST_PHONE, :file => "test"})
     check_status response
     check_txn_ref response
   end
@@ -26,14 +49,14 @@ describe Hoiio::Fax do
   end
 
   it 'should return fax rate' do
-    response = CLIENT.fax.get_rate({"dest" => "+1231231"})
+    response = CLIENT.fax.get_rate({:dest => "+1231231"})
     check_status response
     response["currency"].should == "SGD"
     response["rate"].should == "0.03"
   end
 
   it 'should query fax status' do
-    response = CLIENT.fax.query_status({"txn_ref" => "test"})
+    response = CLIENT.fax.query_status({:txn_ref => "test"})
     check_status response
     response["currency"].should == "USD"
     response["fax_status"].should == "answered"
