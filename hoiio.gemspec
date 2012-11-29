@@ -12,7 +12,8 @@ Gem::Specification.new do |gem|
   gem.summary       = "Hoiio SDK for Ruby"
   gem.homepage      = "https://github.com/icarusK/hoiio-ruby"
 
-  gem.files         = `git ls-files`.split($/)
+  gem.files         = `git ls-files -- lib/*`.split("\n")
+  gem.files        += %w[README.md LICENSE.txt]
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = Dir['spec/**/*.rb']
   gem.require_paths = %w[lib]
@@ -24,7 +25,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec',   '~> 2.6.0'
   gem.add_development_dependency 'fakeweb', '~> 1.3.0'
 
-  gem.extra_rdoc_files = ['README.md', 'LICENSE']
+  gem.extra_rdoc_files = ['README.md', 'LICENSE.txt']
   gem.rdoc_options = ['--line-numbers', '--inline-source', '--title', 'hoiio-ruby', '--main', 'README.md']
 
 end
