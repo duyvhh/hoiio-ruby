@@ -41,7 +41,7 @@ access_token = ''
 After a @client object has been created, app_id and access_token are cached and used for subsequent API calls.
 Normally, app_id won't change, but you can modify the client's access_token by reassigning it to a new one.
 
-All API's URI specified in [Hoiio Developer's website][documentation] are included in this SDK and can be accessed
+All API's URIs specified in [Hoiio Developer's website][documentation] are included in this SDK and can be accessed
 conveniently.
 
 For example, @client.sms will make all SMS APIs with the same name available, i.e: @client.sms.send will call /sms/send,
