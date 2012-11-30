@@ -26,7 +26,7 @@ Or install it yourself as:
 ### Setup
 
 ``` ruby
-require 'hoiio'
+require 'hoiio-ruby'
 
 # Hoiio Application Credentials
 app_id = ''
