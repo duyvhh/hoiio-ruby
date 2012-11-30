@@ -32,7 +32,7 @@ require 'hoiio-ruby'
 app_id = ''
 access_token = ''
 
-# set up a client to talk to the Hoiio REST API
+# create a client to cache the authentication detail and talk to Hoiio RESTful API
 @client = Hoiio::Client.new app_id, access_token
 ```
 
