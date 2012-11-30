@@ -32,7 +32,7 @@ require 'hoiio-ruby'
 app_id = ''
 access_token = ''
 
-# set up a client to talk to the Twilio REST API
+# set up a client to talk to the Hoiio REST API
 @client = Hoiio::Client.new app_id, access_token
 ```
 
