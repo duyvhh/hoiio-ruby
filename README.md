@@ -51,21 +51,21 @@ For example, @client.sms will make all SMS APIs with the same name available, i.
 
 ``` ruby
 # send an SMS using Hoiio
-@client.sms.send(
+@client.sms.send({
   :dest => '+6591234567',
   :msg => 'Hello Steve',
   :notify_url => 'http://dev.example.com/sms/notify'
-)
+})
 ```
 
 ### Make a call
 
 ``` ruby
 # call a destination number using Hoiio
-@client.voice.call(
+@client.voice.call({
   :dest2 => '+6591234567',
   :caller_id => 'private'
-)
+})
 ```
 
 ## API References
