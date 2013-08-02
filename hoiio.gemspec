@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = "This is an SDK for Hoiio API, a set of telephony API that integrate telephony services - phone calls, conference, IVR (Interactive Voice Responses), Fax and SMS - into your services and website easily."
   gem.summary       = "Hoiio SDK for Ruby"
   gem.homepage      = "https://github.com/icarusK/hoiio-ruby"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files -- lib/*`.split("\n")
   gem.files        += %w[README.md LICENSE.txt]

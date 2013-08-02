@@ -21,6 +21,33 @@
 #FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 #OTHER DEALINGS IN THE SOFTWARE.
 
+
 module Hoiio
-  VERSION = '1.1.0'
+  class Conference < Request
+    # The Conference API component of Hoiio API provides developers access to telephony services in
+    # more than 200 countries around the world. You will be able to initiate call conferences
+    # just by making an API request to our servers.
+
+    # Creates a new instance of Conference
+    # @param client a shared object used to cache authentication data
+    def initialize(client)
+      super client
+    end
+
+    # Conference Call API
+    # URL: http://developer.hoiio.com/docs/conference_call.html
+    # Call a list of destination numbers and place them in a conference call.
+    def call(params={})
+      api_post 'conference/call', params, [:dest]
+    end
+
+    # Conference Moderate API
+    # URL: http://developer.hoiio.com/docs/conference_moderate.html
+    # Allows you to moderate a conference that is currently in progress.
+    # Available actions include: "kick", "mute", and "unmute"
+    def moderate(params={})
+      api_post 'conference/moderate', params, [:txn_ref, :action]
+    end
+
+  end
 end

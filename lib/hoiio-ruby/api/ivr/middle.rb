@@ -65,6 +65,20 @@ module Hoiio
         api_post '/ivr/middle/monitor', params, [:session, :notify_url]
       end
 
+      # Call the Hold API
+      # URL: http://developer.hoiio.com/docs/ivr_hold.html
+      # Puts an IVR session on hold and continuously plays the given message on a loop
+      def hold(params={})
+        api_post '/ivr/middle/hold', params, [:session]
+      end
+
+      # Call the Unhold API
+      # URL: http://developer.hoiio.com/docs/ivr_unhold.html
+      # Resumes an IVR session that was put on hold with the Hold block
+      def unhold(params={})
+        api_post '/ivr/middle/unhold', params, [:session, :notify_url]
+      end
+
     end
   end
 end
